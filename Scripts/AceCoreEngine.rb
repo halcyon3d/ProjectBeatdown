@@ -162,7 +162,7 @@ module YEA
     # adjusted, but scripts provided by non-Yanfly Engine sources may or may
     # not adjust themselves properly.
     #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    RESIZE_WIDTH  = 640
+    RESIZE_WIDTH  = 544
     RESIZE_HEIGHT = 416
     
     #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
@@ -193,15 +193,15 @@ module YEA
     # Adjust the default font settings for your game here. The various settings
     # will be explained below.
     #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    FONT_NAME = ["VL Gothic", "Verdana", "Arial", "Courier"]
+    FONT_NAME = ["CharlemagneStd-Bold", "VL Gothic", "Verdana", "Arial", "Courier"]
     # This adjusts the fonts used for your game. If the font at the start of
     # the array doesn't exist on the player's computer, it'll use the next one.
     FONT_SIZE = 24       # Adjusts font size. Default: 24
     FONT_BOLD = false   # Makes font bold. Default: false
     FONT_ITALIC = false  # Makes font italic. Default: false
-    FONT_SHADOW = false  # Gives font a shadow. Default: false
-    FONT_OUTLINE = true  # Gives font an outline. Default: true
-    FONT_COLOUR = Color.new(255, 255, 255, 255)   # Default: 255, 255, 255, 255
+    FONT_SHADOW = true  # Gives font a shadow. Default: false
+    FONT_OUTLINE = false  # Gives font an outline. Default: true
+    FONT_COLOUR = Color.new(218, 175, 237, 180)   # Default: 255, 255, 255, 255
     FONT_OUTLINE_COLOUR = Color.new(0, 0, 0, 128) # Default:   0,   0,   0, 128
     
     #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
