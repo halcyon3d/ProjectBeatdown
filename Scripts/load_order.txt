@@ -118,6 +118,8 @@ Scene_Battle.rb
 Scene_Gameover.rb
 *separator*
 Materials.rb
+AceCoreEngine.rb
+XFade.rb
 ( Insert here ).rb
 *separator*
 Main Process.rb
