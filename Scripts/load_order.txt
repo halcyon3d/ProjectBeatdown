@@ -120,6 +120,7 @@ Scene_Battle.rb
 Scene_Gameover.rb
 *separator*
 Materials.rb
+FullInput.rb
 AceCoreEngine.rb
 #XFade.rb
 Rhythm.rb
