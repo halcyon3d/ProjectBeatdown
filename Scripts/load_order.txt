@@ -3,6 +3,7 @@ Modules.rb
 Vocab.rb
 Sound.rb
 Cache.rb
+Timekeeper.rb
 DataManager.rb
 SceneManager.rb
 BattleManager.rb
@@ -95,6 +96,7 @@ Window_TitleCommand.rb
 Window_GameEnd.rb
 Window_DebugLeft.rb
 Window_DebugRight.rb
+Window_Rhythm_Line.rb
 *separator*
 Scenes.rb
 Scene_Base.rb
@@ -119,7 +121,7 @@ Scene_Gameover.rb
 *separator*
 Materials.rb
 AceCoreEngine.rb
-XFade.rb
+#XFade.rb
 Rhythm.rb
 ( Insert here ).rb
 *separator*
