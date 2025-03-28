@@ -489,7 +489,6 @@ class Scene_Battle < Scene_Base
   def battle_start
     BattleManager.battle_start
     process_event
-    start_party_command_selection
   end
   #--------------------------------------------------------------------------
   # * Start Turn
