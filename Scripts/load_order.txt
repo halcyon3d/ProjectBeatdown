@@ -97,6 +97,7 @@ Window_GameEnd.rb
 Window_DebugLeft.rb
 Window_DebugRight.rb
 Window_Rhythm_Line.rb
+Window_Rhythm_HUD.rb
 *separator*
 Scenes.rb
 Scene_Base.rb
@@ -116,7 +117,8 @@ Scene_End.rb
 Scene_Shop.rb
 Scene_Name.rb
 Scene_Debug.rb
-Scene_Battle.rb
+Scene_Battle_Rhythm.rb
+#Scene_Battle.rb
 Scene_Gameover.rb
 *separator*
 Materials.rb

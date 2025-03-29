@@ -1,73 +1,92 @@
 # encoding: utf-8
-#==============================================================================
-# ** Scene_Battle
-#------------------------------------------------------------------------------
-#  This class performs battle screen processing.
-#==============================================================================
 
+# RHYTHM BATTLE SCENE
 class Scene_Battle < Scene_Base
-  #--------------------------------------------------------------------------
-  # * Start Processing
-  #--------------------------------------------------------------------------
+  $STATUSWINDOWHEIGHT = 168
+
+  #+--------------------
+  #| SET UP
+  #+--------------------
   def start
     super
     create_spriteset
-    create_all_windows
+    create_rhythm_line_window
     BattleManager.method_wait_for_message = method(:wait_for_message)
   end
-  #--------------------------------------------------------------------------
-  # * Post-Start Processing
-  #--------------------------------------------------------------------------
+
   def post_start
     super
     battle_start
   end
-  #--------------------------------------------------------------------------
-  # * Pre-Termination Processing
-  #--------------------------------------------------------------------------
+
   def pre_terminate
     super
     Graphics.fadeout(30) if SceneManager.scene_is?(Scene_Map)
     Graphics.fadeout(60) if SceneManager.scene_is?(Scene_Title)
   end
-  #--------------------------------------------------------------------------
-  # * Termination Processing
-  #--------------------------------------------------------------------------
+
   def terminate
     super
     dispose_spriteset
     @info_viewport.dispose
     RPG::ME.stop
   end
+
+  def create_spriteset
+    @spriteset = Spriteset_Battle.new
+  end
+
+  def dispose_spriteset
+    @spriteset.dispose
+  end
+
+  #--------------------------------------------------------------------------
+  # * CREATE_WINDOWS
+  #--------------------------------------------------------------------------
+
+  def create_all_windows
+    create_info_viewport
+    create_rhythm_line_window
+  end
+
+  def create_info_viewport
+    @info_viewport = Viewport.new
+    @info_viewport.rect.y = $STATUSWINDOWHEIGHT
+    @info_viewport.rect.height = $STATUSWINDOWHEIGHT
+    @info_viewport.z = 100
+    @info_viewport.ox = 64
+  end
+
+  def create_rhythm_line_window
+    @hud = Window_Rhythm_HUD.new
+    @hud.set_viewport(@info_viewport)
+  end
+
   #--------------------------------------------------------------------------
   # * Frame Update
   #--------------------------------------------------------------------------
   def update
     super
-    @hud.refresh
     if BattleManager.in_turn?
       process_event
       process_action
     end
     BattleManager.judge_win_loss
   end
-  #--------------------------------------------------------------------------
-  # * Update Frame (Basic)
-  #--------------------------------------------------------------------------
+
   def update_basic
     super
     $game_timer.update
     $game_troop.update
     @spriteset.update
-    update_info_viewport
-    update_message_open
+    @hud.update
   end
-  #--------------------------------------------------------------------------
-  # * Update Frame (for Wait)
-  #--------------------------------------------------------------------------
+
   def update_for_wait
     update_basic
   end
+
+
   #--------------------------------------------------------------------------
   # * Wait
   #--------------------------------------------------------------------------
@@ -96,7 +115,7 @@ class Scene_Battle < Scene_Base
   # * Wait Until Message Display has Finished
   #--------------------------------------------------------------------------
   def wait_for_message
-    @message_window.update
+    # @message_window.update
     update_for_wait while $game_message.visible
   end
   #--------------------------------------------------------------------------
@@ -112,14 +131,6 @@ class Scene_Battle < Scene_Base
   def wait_for_effect
     update_for_wait
     update_for_wait while @spriteset.effect?
-  end
-  #--------------------------------------------------------------------------
-  # * Update Information Display Viewport
-  #--------------------------------------------------------------------------
-  def update_info_viewport
-    move_info_viewport(0)   if @party_command_window.active
-    move_info_viewport(128) if @actor_command_window.active
-    move_info_viewport(64)  if BattleManager.in_turn?
   end
   #--------------------------------------------------------------------------
   # * Move Information Display Viewport
@@ -141,145 +152,8 @@ class Scene_Battle < Scene_Base
       @actor_command_window.close
     end
   end
-  #--------------------------------------------------------------------------
-  # * Create Sprite Set
-  #--------------------------------------------------------------------------
-  def create_spriteset
-    @spriteset = Spriteset_Battle.new
-  end
-  #--------------------------------------------------------------------------
-  # * Free Sprite Set
-  #--------------------------------------------------------------------------
-  def dispose_spriteset
-    @spriteset.dispose
-  end
-  #--------------------------------------------------------------------------
-  # * Create All Windows
-  #--------------------------------------------------------------------------
-  def create_all_windows
-    create_message_window
-    create_scroll_text_window
-    create_log_window
-    create_status_window
-    create_info_viewport
-    create_rhythm_line_window
-    create_party_command_window
-    create_actor_command_window
-    create_help_window
-    create_skill_window
-    create_item_window
-    create_actor_window
-    create_enemy_window
-  end
-  #--------------------------------------------------------------------------
-  # * Create Message Window
-  #--------------------------------------------------------------------------
-  def create_message_window
-    @message_window = Window_Message.new
-  end
-  #--------------------------------------------------------------------------
-  # * Create Scrolling Text Window
-  #--------------------------------------------------------------------------
-  def create_scroll_text_window
-    @scroll_text_window = Window_ScrollText.new
-  end
-  #--------------------------------------------------------------------------
-  # * Create Log Window
-  #--------------------------------------------------------------------------
-  def create_log_window
-    @log_window = Window_BattleLog.new
-    @log_window.method_wait = method(:wait)
-    @log_window.method_wait_for_effect = method(:wait_for_effect)
-  end
-  #--------------------------------------------------------------------------
-  # * Create Status Window
-  #--------------------------------------------------------------------------
-  def create_status_window
-    @status_window = Window_BattleStatus.new
-    @status_window.x = 128
-  end
-  #--------------------------------------------------------------------------
-  # * Create Information Display Viewport
-  #--------------------------------------------------------------------------
-  def create_info_viewport
-    @info_viewport = Viewport.new
-    @info_viewport.rect.y = Graphics.height - @status_window.height - 24
-    @info_viewport.rect.height = @status_window.height
-    @info_viewport.z = 100
-    @info_viewport.ox = 64
-    @status_window.viewport = @info_viewport
-  end
 
-  def create_rhythm_line_window
-    @hud = Window_Rhythm_HUD.new
-    @hud.set_viewport(@info_viewport)
-  end
 
-  def create_party_command_window
-    @party_command_window = Window_PartyCommand.new
-    @party_command_window.viewport = @info_viewport
-    @party_command_window.set_handler(:fight,  method(:command_fight))
-    @party_command_window.set_handler(:escape, method(:command_escape))
-    @party_command_window.unselect
-  end
-  #--------------------------------------------------------------------------
-  # * Create Actor Commands Window
-  #--------------------------------------------------------------------------
-  def create_actor_command_window
-    @actor_command_window = Window_ActorCommand.new
-    @actor_command_window.viewport = @info_viewport
-    @actor_command_window.set_handler(:attack, method(:command_attack))
-    @actor_command_window.set_handler(:skill,  method(:command_skill))
-    @actor_command_window.set_handler(:guard,  method(:command_guard))
-    @actor_command_window.set_handler(:item,   method(:command_item))
-    @actor_command_window.set_handler(:cancel, method(:prior_command))
-    @actor_command_window.x = Graphics.width
-  end
-  #--------------------------------------------------------------------------
-  # * Create Help Window
-  #--------------------------------------------------------------------------
-  def create_help_window
-    @help_window = Window_Help.new
-    @help_window.visible = false
-  end
-  #--------------------------------------------------------------------------
-  # * Create Skill Window
-  #--------------------------------------------------------------------------
-  def create_skill_window
-    @skill_window = Window_BattleSkill.new(@help_window, @info_viewport)
-    @skill_window.set_handler(:ok,     method(:on_skill_ok))
-    @skill_window.set_handler(:cancel, method(:on_skill_cancel))
-  end
-  #--------------------------------------------------------------------------
-  # * Create Item Window
-  #--------------------------------------------------------------------------
-  def create_item_window
-    @item_window = Window_BattleItem.new(@help_window, @info_viewport)
-    @item_window.set_handler(:ok,     method(:on_item_ok))
-    @item_window.set_handler(:cancel, method(:on_item_cancel))
-  end
-  #--------------------------------------------------------------------------
-  # * Create Actor Window
-  #--------------------------------------------------------------------------
-  def create_actor_window
-    @actor_window = Window_BattleActor.new(@info_viewport)
-    @actor_window.set_handler(:ok,     method(:on_actor_ok))
-    @actor_window.set_handler(:cancel, method(:on_actor_cancel))
-  end
-  #--------------------------------------------------------------------------
-  # * Create Enemy Window
-  #--------------------------------------------------------------------------
-  def create_enemy_window
-    @enemy_window = Window_BattleEnemy.new(@info_viewport)
-    @enemy_window.set_handler(:ok,     method(:on_enemy_ok))
-    @enemy_window.set_handler(:cancel, method(:on_enemy_cancel))
-  end
-  #--------------------------------------------------------------------------
-  # * Update Status Window Information
-  #--------------------------------------------------------------------------
-  def refresh_status
-    @status_window.refresh
-  end
   #--------------------------------------------------------------------------
   # * To Next Command Input
   #--------------------------------------------------------------------------
