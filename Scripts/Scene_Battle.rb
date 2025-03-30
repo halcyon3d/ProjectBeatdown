@@ -44,7 +44,6 @@ class Scene_Battle < Scene_Base
   #--------------------------------------------------------------------------
   def update
     super
-    @hud.refresh
     if BattleManager.in_turn?
       process_event
       process_action
@@ -162,7 +161,6 @@ class Scene_Battle < Scene_Base
     create_log_window
     create_status_window
     create_info_viewport
-    create_rhythm_line_window
     create_party_command_window
     create_actor_command_window
     create_help_window
@@ -203,18 +201,15 @@ class Scene_Battle < Scene_Base
   #--------------------------------------------------------------------------
   def create_info_viewport
     @info_viewport = Viewport.new
-    @info_viewport.rect.y = Graphics.height - @status_window.height - 24
+    @info_viewport.rect.y = Graphics.height - @status_window.height
     @info_viewport.rect.height = @status_window.height
     @info_viewport.z = 100
     @info_viewport.ox = 64
     @status_window.viewport = @info_viewport
   end
-
-  def create_rhythm_line_window
-    @hud = Window_Rhythm_HUD.new
-    @hud.set_viewport(@info_viewport)
-  end
-
+  #--------------------------------------------------------------------------
+  # * Create Party Commands Window
+  #--------------------------------------------------------------------------
   def create_party_command_window
     @party_command_window = Window_PartyCommand.new
     @party_command_window.viewport = @info_viewport
@@ -310,6 +305,7 @@ class Scene_Battle < Scene_Base
       @status_window.open
       if BattleManager.input_start
         @actor_command_window.close
+        @party_command_window.setup
       else
         @party_command_window.deactivate
         turn_start
@@ -478,6 +474,7 @@ class Scene_Battle < Scene_Base
   def battle_start
     BattleManager.battle_start
     process_event
+    start_party_command_selection
   end
   #--------------------------------------------------------------------------
   # * Start Turn

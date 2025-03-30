@@ -98,6 +98,7 @@ Window_DebugLeft.rb
 Window_DebugRight.rb
 Window_Rhythm_Line.rb
 Window_Rhythm_HUD.rb
+Window_QWER_Command.rb
 *separator*
 Scenes.rb
 Scene_Base.rb
@@ -125,9 +126,15 @@ Materials.rb
 FullInput.rb
 AceCoreEngine.rb
 #XFade.rb
-Rhythm.rb
 ( Insert here ).rb
 *separator*
 Main Process.rb
 Main.rb
+*separator*
+*separator*
+*separator*
+*separator*
+*separator*
+*separator*
+*separator*
 *separator*

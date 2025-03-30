@@ -180,6 +180,12 @@ module Input
     SHIFT = [KEYMAP[:SHIFT]]
     CTRL  = [KEYMAP[:CONTROL]]
     ALT   = [KEYMAP[:MENU]]
+
+    QQQQ  = [KEYMAP[:LEFT],   KEYMAP[:LETTER_Q]]
+    WWWW  = [KEYMAP[:DOWN],   KEYMAP[:LETTER_W]]
+    EEEE  = [KEYMAP[:UP],     KEYMAP[:LETTER_E]]
+    RRRR  = [KEYMAP[:RIGHT],  KEYMAP[:LETTER_R]]
+
   
   #===============================================================================
   # Rest of script
@@ -208,7 +214,12 @@ module Input
       :F9       => F9,
       :SHIFT    => SHIFT,
       :CTRL     => CTRL,
-      :ALT      => ALT
+      :ALT      => ALT,
+
+      :QQQQ     => QQQQ,
+      :WWWW     => WWWW,
+      :EEEE     => EEEE,
+      :RRRR     => RRRR
     }
     #--------------------------------------------------------------------------
     # * Key Codes Used in Events Conditional Branchs

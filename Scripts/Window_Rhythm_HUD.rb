@@ -1,11 +1,41 @@
 # encoding: utf-8
 
 class Window_Rhythm_HUD < Window_Base
-  def initialize
+  $player_turn = true
+
+  def initialize(viewport)
     super(edge_padding, 0, window_width, line_height*5)
     self.back_opacity = 96
-    create_rhythm_line_window
+   
+    create_rhythm_lines
+    create_action_command_window
+    set_viewports(viewport)
+
     refresh
+  end
+
+  def set_viewports(viewport)
+    self.viewport = viewport
+    @line1.viewport = viewport
+    @line2.viewport = viewport
+    @line3.viewport = viewport
+    @line4.viewport = viewport
+    @command_window.viewport = viewport
+  end
+
+  def create_action_command_window
+    @command_window = Window_QWER_Command.new(edge_padding, 0, window_width, line_height*5)
+  end
+  
+  def create_rhythm_lines
+    @line1 = Window_Rhythm_Line.new(3, :QQQQ, 1, 2, [1,2,3,5])
+    @line2 = Window_Rhythm_Line.new(2, :WWWW, 3, 4, [2.25,5])
+    @line3 = Window_Rhythm_Line.new(1, :EEEE, 5, 6, [3.25])
+    @line4 = Window_Rhythm_Line.new(0, :RRRR, 7, 8, [3.5])
+  end
+
+  def self.command_window
+    return @command_window
   end
 
   def window_width
@@ -27,28 +57,13 @@ class Window_Rhythm_HUD < Window_Base
   def refresh
     contents.clear
     @line1.refresh ; @line2.refresh ; @line3.refresh ; @line4.refresh
+    draw_text(32, 32, 2000, line_height, Timekeeper.get_current_beat.floor)
+    @command_window.refresh
     draw_frets
   end
 
   def update
-    contents.clear
-    @line1.refresh ; @line2.refresh ; @line3.refresh ; @line4.refresh
-    draw_frets
-  end
-
-  def create_rhythm_line_window
-    @line1 = Window_Rhythm_Line.new(3, :L, 1, 2, [1,2,3,5])
-    @line2 = Window_Rhythm_Line.new(2, :R, 3, 4, [2.25,3.25,5])
-    @line3 = Window_Rhythm_Line.new(1, :X, 5, 6, [3.5])
-    @line4 = Window_Rhythm_Line.new(0, :Y, 7, 8, [3.75])
-  end
-
-  def set_viewport(viewport)
-    self.viewport = viewport
-    @line1.viewport = viewport
-    @line2.viewport = viewport
-    @line3.viewport = viewport
-    @line4.viewport = viewport
+    refresh
   end
 
   def draw_frets

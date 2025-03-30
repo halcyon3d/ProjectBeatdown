@@ -10,7 +10,7 @@ class Scene_Battle < Scene_Base
   def start
     super
     create_spriteset
-    create_rhythm_line_window
+    create_all_windows
     BattleManager.method_wait_for_message = method(:wait_for_message)
   end
 
@@ -46,21 +46,27 @@ class Scene_Battle < Scene_Base
 
   def create_all_windows
     create_info_viewport
-    create_rhythm_line_window
+    create_hud_window
   end
 
   def create_info_viewport
     @info_viewport = Viewport.new
-    @info_viewport.rect.y = $STATUSWINDOWHEIGHT
+    @info_viewport.rect.y = Graphics.height - $STATUSWINDOWHEIGHT
     @info_viewport.rect.height = $STATUSWINDOWHEIGHT
     @info_viewport.z = 100
-    @info_viewport.ox = 64
   end
 
-  def create_rhythm_line_window
-    @hud = Window_Rhythm_HUD.new
-    @hud.set_viewport(@info_viewport)
+  def create_log_window
+    @log_window = Window_BattleLog.new
+    @log_window.method_wait = method(:wait)
+    @log_window.method_wait_for_effect = method(:wait_for_effect)
   end
+
+  def create_hud_window
+    @hud_window = Window_Rhythm_HUD.new(@info_viewport)
+  end
+
+
 
   #--------------------------------------------------------------------------
   # * Frame Update
@@ -79,7 +85,7 @@ class Scene_Battle < Scene_Base
     $game_timer.update
     $game_troop.update
     @spriteset.update
-    @hud.update
+    @hud_window.update
   end
 
   def update_for_wait
@@ -153,16 +159,11 @@ class Scene_Battle < Scene_Base
     end
   end
 
-
   #--------------------------------------------------------------------------
   # * To Next Command Input
   #--------------------------------------------------------------------------
   def next_command
-    if BattleManager.next_command
-      start_actor_command_selection
-    else
-      turn_start
-    end
+    turn_start
   end
   #--------------------------------------------------------------------------
   # * To Previous Command Input
@@ -174,6 +175,7 @@ class Scene_Battle < Scene_Base
       start_party_command_selection
     end
   end
+
   #--------------------------------------------------------------------------
   # * Start Party Command Selection
   #--------------------------------------------------------------------------
