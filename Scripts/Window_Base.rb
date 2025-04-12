@@ -203,6 +203,19 @@ class Window_Base < Window
   def qwer_icon(i)
     case i
     when 0
+      return 2
+    when 1
+      return 4
+    when 2
+      return 6
+    when 3
+      return 8
+    end
+  end
+
+  def qwer_icon_faded(i)
+    case i
+    when 0
       return 1
     when 1
       return 3
@@ -210,6 +223,28 @@ class Window_Base < Window
       return 5
     when 3
       return 7
+    end
+  end
+
+  def wheel_pos_x(i)
+    case i
+    when 5,6,7
+      return -1
+    when 1,2,3
+      return 1
+    else
+      return 0
+    end
+  end
+
+  def wheel_pos_y(i)
+    case i
+    when 0,1,7
+      return -1
+    when 3,4,5
+      return 1
+    else
+      return 0
     end
   end
 

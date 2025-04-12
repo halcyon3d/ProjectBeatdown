@@ -2713,17 +2713,6 @@ class Scene_Battle < Scene_Base
   end
   
   #--------------------------------------------------------------------------
-  # alias method: create_item_window
-  #--------------------------------------------------------------------------
-  alias scene_battle_create_item_window_abe create_item_window
-  def create_item_window
-    scene_battle_create_item_window_abe
-    @item_window.height = @skill_window.height
-    @item_window.width = @skill_window.width
-    @item_window.y = Graphics.height - @item_window.height
-  end
-  
-  #--------------------------------------------------------------------------
   # alias method: show_fast?
   #--------------------------------------------------------------------------
   alias scene_battle_show_fast_abe show_fast?
@@ -2895,40 +2884,6 @@ class Scene_Battle < Scene_Base
       @skill_window.show
     when :item
       @item_window.show
-    end
-  end
-  
-  #--------------------------------------------------------------------------
-  # alias method: select_enemy_selection
-  #--------------------------------------------------------------------------
-  alias scene_battle_select_enemy_selection_abe select_enemy_selection
-  def select_enemy_selection
-    @status_aid_window.refresh
-    scene_battle_select_enemy_selection_abe
-    @help_window.show
-  end
-  #--------------------------------------------------------------------------
-  # alias method: on_enemy_ok
-  #--------------------------------------------------------------------------
-  alias scene_battle_on_enemy_ok_abe on_enemy_ok
-  def on_enemy_ok
-    $game_temp.battle_aid = nil
-    scene_battle_on_enemy_ok_abe
-  end
-  
-  #--------------------------------------------------------------------------
-  # alias method: on_enemy_cancel
-  #--------------------------------------------------------------------------
-  alias scene_battle_on_enemy_cancel_abe on_enemy_cancel
-  def on_enemy_cancel
-    BattleManager.actor.input.clear
-    @status_aid_window.refresh
-    $game_temp.battle_aid = nil
-    scene_battle_on_enemy_cancel_abe
-    if @skill_window.visible || @item_window.visible
-      @help_window.show
-    else
-      @help_window.hide
     end
   end
   

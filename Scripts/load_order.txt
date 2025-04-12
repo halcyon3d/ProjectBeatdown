@@ -101,6 +101,10 @@ Window_Selectable_QWER.rb
 Window_Command_QWER.rb
 Window_ActorCommand_QWER.rb
 Window_PartyCommand_QWER.rb
+Window_Selectable_Wheel.rb
+Window_Item_Wheel.rb
+Window_Skill_Wheel.rb
+Window_BattleEnemy_Hover.rb
 *separator*
 Window_Rhythm_Line.rb
 Window_Rhythm_HUD.rb
@@ -146,4 +150,3 @@ Main.rb
 *separator*
 *separator*
 *separator*
-Window_BattleEnemy_Hover.rb

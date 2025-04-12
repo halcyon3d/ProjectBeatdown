@@ -42,9 +42,7 @@ class Scene_Battle < Scene_Base
     @overlay_viewport.dispose
     RPG::ME.stop
   end
-  #--------------------------------------------------------------------------
-  # * Frame Update
-  #--------------------------------------------------------------------------
+
   def update
     super
     if BattleManager.in_turn?
@@ -53,23 +51,24 @@ class Scene_Battle < Scene_Base
     end
     BattleManager.judge_win_loss
   end
-  #--------------------------------------------------------------------------
-  # * Update Frame (Basic)
-  #--------------------------------------------------------------------------
+  
   def update_basic
     super
     $game_timer.update
     $game_troop.update
     @spriteset.update
+    @hud_window.update
     update_info_viewport
     update_message_open
   end
-  #--------------------------------------------------------------------------
-  # * Update Frame (for Wait)
-  #--------------------------------------------------------------------------
+
   def update_for_wait
     update_basic
   end
+
+
+
+
   #--------------------------------------------------------------------------
   # * Wait
   #--------------------------------------------------------------------------
@@ -228,13 +227,15 @@ class Scene_Battle < Scene_Base
   end
 
   def create_skill_window
-    @skill_window = Window_BattleSkill.new(@help_window, @info_viewport)
+    @skill_window = Window_Skill_Wheel.new
+    @skill_window.viewport = @overlay_viewport
     @skill_window.set_handler(:ok,     method(:on_skill_ok))
     @skill_window.set_handler(:cancel, method(:on_skill_cancel))
   end
 
   def create_item_window
-    @item_window = Window_BattleItem.new(@help_window, @overlay_viewport)
+    @item_window = Window_Item_Wheel.new
+    @item_window.viewport = @overlay_viewport
     @item_window.set_handler(:ok,     method(:on_item_ok))
     @item_window.set_handler(:cancel, method(:on_item_cancel))
   end
@@ -246,9 +247,7 @@ class Scene_Battle < Scene_Base
   end
 
   def create_enemy_window
-    @enemy_window = Window_BattleEnemy.new(@info_viewport)
-    @enemy_window.set_handler(:ok,     method(:on_enemy_ok))
-    @enemy_window.set_handler(:cancel, method(:on_enemy_cancel))
+    @enemy_window = Window_BattleEnemy_Hover.new
   end
 
   def create_hud_window
@@ -257,6 +256,7 @@ class Scene_Battle < Scene_Base
 
 
 
+  
   
   def create_status_window
     @status_window = Window_BattleStatus.new
@@ -326,13 +326,15 @@ class Scene_Battle < Scene_Base
     @party_command_window.close
     @actor_command_window.setup(BattleManager.actor)
   end
-  #--------------------------------------------------------------------------
-  # * [Attack] Command
-  #--------------------------------------------------------------------------
+ 
   def command_attack
     BattleManager.actor.input.set_attack
-    select_enemy_selection
+    if @enemy_window.enemy
+      BattleManager.actor.input.target_index = @enemy_window.enemy.index
+    end
+    next_command
   end
+
   #--------------------------------------------------------------------------
   # * [Skill] Command
   #--------------------------------------------------------------------------
@@ -385,37 +387,7 @@ class Scene_Battle < Scene_Base
       @item_window.activate
     end
   end
-  #--------------------------------------------------------------------------
-  # * Start Enemy Selection
-  #--------------------------------------------------------------------------
-  def select_enemy_selection
-    @enemy_window.refresh
-    @enemy_window.show.activate
-  end
-  #--------------------------------------------------------------------------
-  # * Enemy [OK]
-  #--------------------------------------------------------------------------
-  def on_enemy_ok
-    BattleManager.actor.input.target_index = @enemy_window.enemy.index
-    @enemy_window.hide
-    @skill_window.hide
-    @item_window.hide
-    next_command
-  end
-  #--------------------------------------------------------------------------
-  # * Enemy [Cancel]
-  #--------------------------------------------------------------------------
-  def on_enemy_cancel
-    @enemy_window.hide
-    case @actor_command_window.current_symbol
-    when :attack
-      @actor_command_window.activate
-    when :skill
-      @skill_window.activate
-    when :item
-      @item_window.activate
-    end
-  end
+
   #--------------------------------------------------------------------------
   # * Skill [OK]
   #--------------------------------------------------------------------------

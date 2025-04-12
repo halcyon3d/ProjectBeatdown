@@ -345,6 +345,22 @@ module Input
       return 0
     end
   
+    def self.dir8input
+      down = self.press?(DOWN)
+      left = self.press?(LEFT)
+      return 5 if down and left
+      right = self.press?(RIGHT)
+      return 3 if down and right
+      up = self.press?(UP)
+      return 7 if up and left
+      return 1 if up and right
+      return 4 if down
+      return 6 if left
+      return 2 if right
+      return 0 if up
+      return -1
+    end
+
     #--------------------------------------------------------------------------
     # * Determines whether the button corresponding to the symbol sym is
     # currently being pressed.

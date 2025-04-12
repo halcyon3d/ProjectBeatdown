@@ -1,22 +1,23 @@
-# encoding: utf-8
-
-class Window_Selectable_QWER < Window_Base
+class Window_Selectable_Wheel < Window_Base
 
   attr_reader   :index                    # cursor position
-  attr_reader   :help_window              # help window
   attr_accessor :cursor_fix               # fix cursor flag
   attr_accessor :cursor_all               # select all cursors flag
 
-  def initialize
-    super(edge_padding, line_height/2, window_width, line_height*4)
+  def initialize(key, wheelx, wheely)
+    super(edge_padding + wheelx - line_height * 1.5, wheely - line_height / 2, line_height*3, line_height*3)
 
-    self.windowskin = Cache.system("WindowBorderless")
     self.back_opacity = 0
 
     @index = 1000000
     @handler = {}
     @cursor_fix = false
     @cursor_all = false
+
+    @key = key
+    @wheelx = wheelx
+    @wheely = wheely
+
     update_padding
     deactivate
   end
@@ -24,57 +25,46 @@ class Window_Selectable_QWER < Window_Base
   def update
     super
     process_handling
+    refresh
   end
 
   def process_handling
     return unless open? && active
+    @index = Input.dir8input
 
-    return chooseindex(0)   if Input.trigger?(:KEYQ)
-    return chooseindex(1)   if Input.trigger?(:KEYW)
-    return chooseindex(2)   if Input.trigger?(:KEYE)
-    return chooseindex(3)   if Input.trigger?(:KEYR)
+    return if Input.press?(@key)
 
-    return process_cancel   if cancel_enabled?    && Input.trigger?(:B)
-    
-    # return process_pagedown if handle?(:pagedown) && Input.trigger?(:R)
-    # return process_pageup   if handle?(:pageup)   && Input.trigger?(:L)
-  end
-
-  def chooseindex(index)
-    select(index)
-    if current_item_enabled?
+    if @index < item_max && current_item_enabled?
       Sound.play_ok
       Input.update
       deactivate
       call_ok_handler
     else
       Sound.play_buzzer
+      return process_cancel
     end
   end
 
-
-
-
   def item_rect(index)
     rect = Rect.new
-    rect.width = fret_width
-    rect.height = line_height
-    rect.x = index * fret_width
-    rect.y = (3 - index) * line_height
-    rect
-  end
-
-  def item_rect_for_text(index)
-    rect = item_rect(index)
-    rect.x += line_height / 2
-    rect
-  end
-
-  def item_rect_for_icon(index)
-    rect = item_rect(index)
-    rect.x -= line_height / 2
     rect.width = line_height
+    rect.height = line_height
+    rect.x = line_height + wheel_pos_x(index) * line_height
+    rect.y = line_height + wheel_pos_y(index) * line_height
     rect
+  end
+
+  def draw_item(index, enabled)
+    rect = item_rect(index)
+    draw_icon(get_item_icon(index), rect.x, rect.y, enabled)
+  end
+  
+  def get_item_icon(i)
+    return i
+  end
+
+  def draw_all_items
+    8.times {|i| draw_item(i, i==Input.dir8input) }
   end
 
   #--------------------------------------------------------------------------
@@ -398,17 +388,7 @@ class Window_Selectable_QWER < Window_Base
   def current_item_enabled?
     return true
   end
-  #--------------------------------------------------------------------------
-  # * Draw All Items
-  #--------------------------------------------------------------------------
-  def draw_all_items
-    item_max.times {|i| draw_item(i) }
-  end
-  #--------------------------------------------------------------------------
-  # * Draw Item
-  #--------------------------------------------------------------------------
-  def draw_item(index)
-  end
+
   #--------------------------------------------------------------------------
   # * Erase Item
   #--------------------------------------------------------------------------
@@ -433,6 +413,8 @@ class Window_Selectable_QWER < Window_Base
   #--------------------------------------------------------------------------
   def refresh
     contents.clear
-    draw_all_items
+    if active
+      draw_all_items
+    end
   end
 end

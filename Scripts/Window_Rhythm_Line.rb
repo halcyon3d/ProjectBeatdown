@@ -59,7 +59,7 @@ class Window_Rhythm_Line < Window_Base
   end
 
   def draw_string
-    contents.fill_rect(0, line_height / 2, window_width + line_height / 2, 2, Color.new(255, 255, 255))
+    contents.fill_rect(line_height / 2, line_height / 2 - 1, window_width - 5, 2, Color.new(0, 0, 0))
   end
 
   def draw_symbol
