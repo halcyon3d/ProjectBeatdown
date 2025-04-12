@@ -25,6 +25,8 @@ class Scene_Debug < Scene_MenuBase
   #--------------------------------------------------------------------------
   # * Create Left Window
   #--------------------------------------------------------------------------
+  #something
+  #trivial
   def create_left_window
     @left_window = Window_DebugLeft.new(0, 0)
     @left_window.set_handler(:ok,     method(:on_left_ok))
