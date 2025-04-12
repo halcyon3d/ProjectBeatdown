@@ -47,6 +47,9 @@ class Scene_Battle < Scene_Base
   def create_all_windows
     create_info_viewport
     create_hud_window
+    create_message_window
+    create_log_window
+    create_enemy_window
   end
 
   def create_info_viewport
@@ -54,6 +57,10 @@ class Scene_Battle < Scene_Base
     @info_viewport.rect.y = Graphics.height - $STATUSWINDOWHEIGHT
     @info_viewport.rect.height = $STATUSWINDOWHEIGHT
     @info_viewport.z = 100
+  end
+
+  def create_message_window
+    @message_window = Window_Message.new
   end
 
   def create_log_window
@@ -64,9 +71,19 @@ class Scene_Battle < Scene_Base
 
   def create_hud_window
     @hud_window = Window_Rhythm_HUD.new(@info_viewport)
+    @hud_window.set_handler(:attack,  method(:command_attack))
   end
 
+  def wait_for_message
+    @message_window.update
+    update_for_wait while $game_message.visible
+  end
 
+  def create_enemy_window
+    @enemy_window = Window_BattleEnemy.new(@info_viewport)
+    @enemy_window.set_handler(:ok,     method(:on_enemy_ok))
+    @enemy_window.set_handler(:cancel, method(:on_enemy_cancel))
+  end
 
   #--------------------------------------------------------------------------
   # * Frame Update
@@ -216,12 +233,13 @@ class Scene_Battle < Scene_Base
   # * [Attack] Command
   #--------------------------------------------------------------------------
   def command_attack
-    BattleManager.actor.input.set_attack
-    select_enemy_selection
+    if BattleManager.next_command
+      BattleManager.actor.input.set_attack
+      select_enemy_selection
+    end
   end
   #--------------------------------------------------------------------------
-  # * [Skill] Command
-  #--------------------------------------------------------------------------
+  # * [Skill] Command  #--------------------------------------------------------------------------
   def command_skill
     @skill_window.actor = BattleManager.actor
     @skill_window.stype_id = @actor_command_window.current_ext
@@ -359,9 +377,6 @@ class Scene_Battle < Scene_Base
   # * Start Turn
   #--------------------------------------------------------------------------
   def turn_start
-    @party_command_window.close
-    @actor_command_window.close
-    @status_window.unselect
     @subject =  nil
     BattleManager.turn_start
     @log_window.wait

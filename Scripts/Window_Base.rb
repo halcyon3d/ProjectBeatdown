@@ -169,6 +169,42 @@ class Window_Base < Window
   def tp_gauge_color1;   text_color(28);  end;    # TP gauge 1
   def tp_gauge_color2;   text_color(29);  end;    # TP gauge 2
   def tp_cost_color;     text_color(29);  end;    # TP cost
+
+  def qwer_color(i)
+    case i
+    when 0
+      return Color.new(255, 0, 0, 100)
+    when 1
+      return Color.new(255, 255, 0, 100)
+    when 2
+      return Color.new(0, 255, 0, 100)
+    when 3
+      return Color.new(0, 0, 255, 100)
+    else
+      return Color.new(0,0,0,0)
+    end
+  end
+
+  def window_width
+    return Graphics.width - 2 * edge_padding
+  end
+
+  def window_height
+    return line_height * 5
+  end
+
+  def fret_width
+    return window_width / 4
+  end
+
+  def standard_padding
+    return 0
+  end
+
+  def edge_padding
+    return 64
+  end
+
   #--------------------------------------------------------------------------
   # * Get Background Color of Pending Item
   #--------------------------------------------------------------------------

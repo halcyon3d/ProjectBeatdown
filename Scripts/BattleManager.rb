@@ -6,6 +6,9 @@
 #==============================================================================
 
 module BattleManager
+  def reset_mc
+    @actor_index = 0
+  end
   #--------------------------------------------------------------------------
   # * Setup
   #--------------------------------------------------------------------------
@@ -26,7 +29,7 @@ module BattleManager
     @event_proc = nil           # Event Callback
     @preemptive = false         # Preemptive Attack Flag
     @surprise = false           # Surprise Flag
-    @actor_index = -1           # Actor for Which Command Is Being Entered
+    @actor_index = 0            # Actor for Which Command Is Being Entered
     @action_forced = nil        # Force Action
     @map_bgm = nil              # For Memorizing Pre-Battle BGM
     @map_bgs = nil              # For Memorizing Pre-Battle BGS
