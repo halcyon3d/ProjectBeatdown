@@ -1693,6 +1693,7 @@ end # Game_Unit
 #==============================================================================
 
 class Window_PartyCommand < Window_Command
+
   
   #--------------------------------------------------------------------------
   # overwrite method: process_handling
@@ -2653,7 +2654,6 @@ class Scene_Battle < Scene_Base
   alias scene_battle_create_info_viewport_abe create_info_viewport
   def create_info_viewport
     scene_battle_create_info_viewport_abe
-    @status_window.refresh
   end
   
   #--------------------------------------------------------------------------

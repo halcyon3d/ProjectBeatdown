@@ -6,19 +6,18 @@
 #==============================================================================
 
 class Window_Selectable_QWER < Window_Base
-  #--------------------------------------------------------------------------
-  # * Public Instance Variables
-  #--------------------------------------------------------------------------
+
   attr_reader   :index                    # cursor position
   attr_reader   :help_window              # help window
   attr_accessor :cursor_fix               # fix cursor flag
   attr_accessor :cursor_all               # select all cursors flag
-  #--------------------------------------------------------------------------
-  # * Object Initialization
-  #-------------------------------------------------------------------------
+
   def initialize
     super(edge_padding, line_height/2, window_width, line_height*4)
-    self.windowskin = Bitmap.new(128, 128)
+
+    self.windowskin = Cache.system("WindowBorderless")
+    self.back_opacity = 0
+
     @index = 1000000
     @handler = {}
     @cursor_fix = false
@@ -26,6 +25,63 @@ class Window_Selectable_QWER < Window_Base
     update_padding
     deactivate
   end
+
+  def update
+    super
+    process_handling
+  end
+
+  def process_handling
+    return unless open? && active
+
+    return chooseindex(0)   if Input.trigger?(:KEYQ)
+    return chooseindex(1)   if Input.trigger?(:KEYW)
+    return chooseindex(2)   if Input.trigger?(:KEYE)
+    return chooseindex(3)   if Input.trigger?(:KEYR)
+
+    return process_cancel   if cancel_enabled?    && Input.trigger?(:B)
+    
+    # return process_pagedown if handle?(:pagedown) && Input.trigger?(:R)
+    # return process_pageup   if handle?(:pageup)   && Input.trigger?(:L)
+  end
+
+  def chooseindex(index)
+    select(index)
+    if current_item_enabled?
+      Sound.play_ok
+      Input.update
+      deactivate
+      call_ok_handler
+    else
+      Sound.play_buzzer
+    end
+  end
+
+
+
+
+  def item_rect(index)
+    rect = Rect.new
+    rect.width = fret_width
+    rect.height = line_height
+    rect.x = index * fret_width
+    rect.y = (3 - index) * line_height
+    rect
+  end
+
+  def item_rect_for_text(index)
+    rect = item_rect(index)
+    rect.x += line_height / 2
+    rect
+  end
+
+  def item_rect_for_icon(index)
+    rect = item_rect(index)
+    rect.x -= line_height / 2
+    rect.width = line_height
+    rect
+  end
+
   #--------------------------------------------------------------------------
   # * Get Digit Count
   #--------------------------------------------------------------------------
@@ -167,26 +223,8 @@ class Window_Selectable_QWER < Window_Base
   def bottom_row=(row)
     self.top_row = row - (page_row_max - 1)
   end
-  #--------------------------------------------------------------------------
-  # * Get Rectangle for Drawing Items
-  #--------------------------------------------------------------------------
-  def item_rect(index)
-    rect = Rect.new
-    rect.width = fret_width
-    rect.height = line_height
-    rect.x = index * fret_width
-    rect.y = (3 - index) * line_height
-    rect
-  end
-  #--------------------------------------------------------------------------
-  # * Get Rectangle for Drawing Items (for Text)
-  #--------------------------------------------------------------------------
-  def item_rect_for_text(index)
-    rect = item_rect(index)
-    rect.x += 4
-    rect.width -= 8
-    rect
-  end
+
+
   #--------------------------------------------------------------------------
   # * Set Help Window
   #--------------------------------------------------------------------------
@@ -269,38 +307,7 @@ class Window_Selectable_QWER < Window_Base
       select([@index - page_item_max, 0].max)
     end
   end
-  #--------------------------------------------------------------------------
-  # * Frame Update
-  #--------------------------------------------------------------------------
-  def update
-    super
-    process_cursor_move
-    process_handling
-  end
-  #--------------------------------------------------------------------------
-  # * Cursor Movement Processing
-  #--------------------------------------------------------------------------
-  def process_cursor_move
-    return unless cursor_movable?
-    last_index = @index
-    cursor_down (Input.trigger?(:DOWN))  if Input.repeat?(:DOWN)
-    cursor_up   (Input.trigger?(:UP))    if Input.repeat?(:UP)
-    cursor_right(Input.trigger?(:RIGHT)) if Input.repeat?(:RIGHT)
-    cursor_left (Input.trigger?(:LEFT))  if Input.repeat?(:LEFT)
-    cursor_pagedown   if !handle?(:pagedown) && Input.trigger?(:R)
-    cursor_pageup     if !handle?(:pageup)   && Input.trigger?(:L)
-    Sound.play_cursor if @index != last_index
-  end
-  #--------------------------------------------------------------------------
-  # * Handling Processing for OK and Cancel Etc.
-  #--------------------------------------------------------------------------
-  def process_handling
-    return unless open? && active
-    return process_ok       if ok_enabled?        && Input.trigger?(:C)
-    return process_cancel   if cancel_enabled?    && Input.trigger?(:B)
-    return process_pagedown if handle?(:pagedown) && Input.trigger?(:R)
-    return process_pageup   if handle?(:pageup)   && Input.trigger?(:L)
-  end
+
   #--------------------------------------------------------------------------
   # * Get Activation State of OK Processing
   #--------------------------------------------------------------------------
@@ -316,16 +323,7 @@ class Window_Selectable_QWER < Window_Base
   #--------------------------------------------------------------------------
   # * Processing When OK Button Is Pressed
   #--------------------------------------------------------------------------
-  def process_ok
-    if current_item_enabled?
-      Sound.play_ok
-      Input.update
-      deactivate
-      call_ok_handler
-    else
-      Sound.play_buzzer
-    end
-  end
+
   #--------------------------------------------------------------------------
   # * Call OK Handler
   #--------------------------------------------------------------------------
@@ -369,15 +367,16 @@ class Window_Selectable_QWER < Window_Base
   # * Update Cursor
   #--------------------------------------------------------------------------
   def update_cursor
-    if @cursor_all
-      cursor_rect.set(0, 0, contents.width, row_max * item_height)
-      self.top_row = 0
-    elsif @index < 0
-      cursor_rect.empty
-    else
-      ensure_cursor_visible
-      cursor_rect.set(item_rect(@index))
-    end
+    cursor_rect.empty
+    # if @cursor_all
+    #   cursor_rect.set(0, 0, contents.width, row_max * item_height)
+    #   self.top_row = 0
+    # elsif @index < 0
+    #   cursor_rect.empty
+    # else
+    #   ensure_cursor_visible
+    #   cursor_rect.set(item_rect(@index))
+    # end
   end
   #--------------------------------------------------------------------------
   # * Scroll Cursor to Position Within Screen

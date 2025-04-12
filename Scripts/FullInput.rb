@@ -181,6 +181,11 @@ module Input
     CTRL  = [KEYMAP[:CONTROL]]
     ALT   = [KEYMAP[:MENU]]
 
+    KEYQ  = [KEYMAP[:LETTER_Q]]
+    KEYW  = [KEYMAP[:LETTER_W]]
+    KEYE  = [KEYMAP[:LETTER_E]]
+    KEYR  = [KEYMAP[:LETTER_R]]
+
     QQQQ  = [KEYMAP[:LEFT],   KEYMAP[:LETTER_Q]]
     WWWW  = [KEYMAP[:DOWN],   KEYMAP[:LETTER_W]]
     EEEE  = [KEYMAP[:UP],     KEYMAP[:LETTER_E]]
@@ -215,6 +220,11 @@ module Input
       :SHIFT    => SHIFT,
       :CTRL     => CTRL,
       :ALT      => ALT,
+
+      :KEYQ     => KEYQ,
+      :KEYW     => KEYW,
+      :KEYE     => KEYE,
+      :KEYR     => KEYR,
 
       :QQQQ     => QQQQ,
       :WWWW     => WWWW,

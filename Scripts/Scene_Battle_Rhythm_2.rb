@@ -39,6 +39,7 @@ class Scene_Battle < Scene_Base
     super
     dispose_spriteset
     @info_viewport.dispose
+    @overlay_viewport.dispose
     RPG::ME.stop
   end
   #--------------------------------------------------------------------------
@@ -158,11 +159,12 @@ class Scene_Battle < Scene_Base
   # * Create All Windows
   #--------------------------------------------------------------------------
   def create_all_windows
+    create_info_viewport
+    create_overlay_viewport
     create_message_window
     create_scroll_text_window
     create_log_window
     create_status_window
-    create_info_viewport
     create_party_command_window
     create_actor_command_window
     create_help_window
@@ -187,22 +189,24 @@ class Scene_Battle < Scene_Base
     @log_window.method_wait_for_effect = method(:wait_for_effect)
   end
 
-  def create_status_window
-    @status_window = Window_BattleStatus.new
-    @status_window.x = 128
-  end
 
   def create_info_viewport
     @info_viewport = Viewport.new
     @info_viewport.rect.y = Graphics.height - $STATUSWINDOWHEIGHT
     @info_viewport.rect.height = $STATUSWINDOWHEIGHT
     @info_viewport.z = 100
-    @status_window.viewport = @info_viewport
+  end
+
+  def create_overlay_viewport
+    @overlay_viewport = Viewport.new
+    @overlay_viewport.rect.y = Graphics.height - $STATUSWINDOWHEIGHT
+    @overlay_viewport.rect.height = $STATUSWINDOWHEIGHT
+    @overlay_viewport.z = 100
   end
 
   def create_party_command_window
-    @party_command_window = Window_PartyCommand.new
-    @party_command_window.viewport = @info_viewport
+    @party_command_window = Window_PartyCommand_QWER.new
+    @party_command_window.viewport = @overlay_viewport
     @party_command_window.set_handler(:fight,  method(:command_fight))
     @party_command_window.set_handler(:escape, method(:command_escape))
     @party_command_window.unselect
@@ -210,11 +214,11 @@ class Scene_Battle < Scene_Base
 
   def create_actor_command_window
     @actor_command_window = Window_ActorCommand_QWER.new
-    @actor_command_window.viewport = @info_viewport
+    @actor_command_window.viewport = @overlay_viewport
     @actor_command_window.set_handler(:attack, method(:command_attack))
     @actor_command_window.set_handler(:skill,  method(:command_skill))
-    @actor_command_window.set_handler(:guard,  method(:command_guard))
     @actor_command_window.set_handler(:item,   method(:command_item))
+    @actor_command_window.set_handler(:guard,  method(:command_guard))
     @actor_command_window.set_handler(:cancel, method(:prior_command))
   end
 
@@ -230,7 +234,7 @@ class Scene_Battle < Scene_Base
   end
 
   def create_item_window
-    @item_window = Window_BattleItem.new(@help_window, @info_viewport)
+    @item_window = Window_BattleItem.new(@help_window, @overlay_viewport)
     @item_window.set_handler(:ok,     method(:on_item_ok))
     @item_window.set_handler(:cancel, method(:on_item_cancel))
   end
@@ -249,7 +253,14 @@ class Scene_Battle < Scene_Base
 
   def create_hud_window
     @hud_window = Window_Rhythm_HUD.new(@info_viewport)
-    @hud_window.set_handler(:attack,  method(:command_attack))
+  end
+
+
+
+  
+  def create_status_window
+    @status_window = Window_BattleStatus.new
+    @status_window.x = Graphics.width
   end
 
   #--------------------------------------------------------------------------

@@ -173,15 +173,43 @@ class Window_Base < Window
   def qwer_color(i)
     case i
     when 0
-      return Color.new(255, 0, 0, 100)
+      return Color.new(255, 0, 0, 255)
     when 1
-      return Color.new(255, 255, 0, 100)
+      return Color.new(255, 255, 0, 255)
     when 2
-      return Color.new(0, 255, 0, 100)
+      return Color.new(0, 255, 0, 255)
     when 3
-      return Color.new(0, 0, 255, 100)
+      return Color.new(0, 255, 255, 255)
     else
       return Color.new(0,0,0,0)
+    end
+  end
+
+  def qwer_color_faded(i, o)
+    case i
+    when 0
+      return Color.new(255, 0, 0, o)
+    when 1
+      return Color.new(255, 255, 0, o)
+    when 2
+      return Color.new(0, 255, 0, o)
+    when 3
+      return Color.new(0, 255, 255, o)
+    else
+      return Color.new(0,0,0,0)
+    end
+  end
+
+  def qwer_icon(i)
+    case i
+    when 0
+      return 1
+    when 1
+      return 3
+    when 2
+      return 5
+    when 3
+      return 7
     end
   end
 

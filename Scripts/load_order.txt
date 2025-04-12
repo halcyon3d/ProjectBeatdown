@@ -54,9 +54,6 @@ Windows.rb
 Window_Base.rb
 Window_Selectable.rb
 Window_Command.rb
-Window_Selectable_QWER.rb
-Window_Command_QWER.rb
-Window_ActorCommand_QWER.rb
 Window_HorzCommand.rb
 Window_Help.rb
 Window_Gold.rb
@@ -99,9 +96,14 @@ Window_TitleCommand.rb
 Window_GameEnd.rb
 Window_DebugLeft.rb
 Window_DebugRight.rb
+*separator*
+Window_Selectable_QWER.rb
+Window_Command_QWER.rb
+Window_ActorCommand_QWER.rb
+Window_PartyCommand_QWER.rb
+*separator*
 Window_Rhythm_Line.rb
 Window_Rhythm_HUD.rb
-Window_QWER_Command.rb
 *separator*
 Scenes.rb
 Scene_Base.rb
@@ -144,3 +146,4 @@ Main.rb
 *separator*
 *separator*
 *separator*
+Window_BattleEnemy_Hover.rb

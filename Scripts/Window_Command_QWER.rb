@@ -20,26 +20,27 @@ class Window_Command_QWER < Window_Selectable_QWER
 
   def draw_item(index)
     change_color(qwer_color(index), command_enabled?(index))
-    draw_text(item_rect_for_text(index), command_name(index), alignment)
+
+    @rect = item_rect_for_text(index)
+    @rect.x -= line_height / 2
+    # @rect.width += line_height / 2
+    contents.fill_rect(@rect.x, @rect.y, @rect.width, @rect.height, qwer_color_faded(index, 100))
+
+    draw_text(item_rect_for_text(index), command_name(index))
+    draw_icon(qwer_icon(index), item_rect_for_icon(index).x, item_rect_for_icon(index).y)
   end
 
-  #--------------------------------------------------------------------------
-  # * Get Number of Items
-  #--------------------------------------------------------------------------
   def item_max
     @list.size
   end
-  #--------------------------------------------------------------------------
-  # * Clear Command List
-  #--------------------------------------------------------------------------
+
   def clear_command_list
     @list = []
   end
-  #--------------------------------------------------------------------------
-  # * Create Command List
-  #--------------------------------------------------------------------------
+
   def make_command_list
   end
+
   #--------------------------------------------------------------------------
   # * Add Command
   #     name    : Command name
@@ -100,13 +101,6 @@ class Window_Command_QWER < Window_Selectable_QWER
   end
 
 
-
-  #--------------------------------------------------------------------------
-  # * Get Alignment
-  #--------------------------------------------------------------------------
-  def alignment
-    return 0
-  end
   #--------------------------------------------------------------------------
   # * Get Activation State of OK Processing
   #--------------------------------------------------------------------------

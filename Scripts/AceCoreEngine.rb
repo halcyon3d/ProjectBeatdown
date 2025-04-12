@@ -200,7 +200,7 @@ module YEA
     FONT_BOLD = false   # Makes font bold. Default: false
     FONT_ITALIC = false  # Makes font italic. Default: false
     FONT_SHADOW = true  # Gives font a shadow. Default: false
-    FONT_OUTLINE = false  # Gives font an outline. Default: true
+    FONT_OUTLINE = true  # Gives font an outline. Default: true
     FONT_COLOUR = Color.new(218, 175, 237, 180)   # Default: 255, 255, 255, 255
     FONT_OUTLINE_COLOUR = Color.new(0, 0, 0, 128) # Default:   0,   0,   0, 128
     

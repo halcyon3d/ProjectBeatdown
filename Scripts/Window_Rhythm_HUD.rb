@@ -1,8 +1,6 @@
 # encoding: utf-8
 
 class Window_Rhythm_HUD < Window_Base
-  $player_turn = true
-  $select_action = true
 
   def initialize(viewport)
     super(edge_padding, 0, window_width, line_height*5)
@@ -20,31 +18,10 @@ class Window_Rhythm_HUD < Window_Base
     draw_text(32, 32, 2000, line_height, Timekeeper.get_current_beat.floor)
     @line1.refresh ; @line2.refresh ; @line3.refresh ; @line4.refresh
     draw_frets
-    @command_window.clear
   end
 
   def update
     refresh
-    if $select_action
-      @command_window.refresh
-      handle_input_buttons
-      return  
-    end
-  end
-
-  def handle_input_buttons
-    if Input.press?(:LETTER_Q)
-      $select_action = false
-      call_handler(:attack)
-    end
-  end
-
-  def set_handler(symbol, method)
-    @handler[symbol] = method
-  end
-
-  def call_handler(symbol)
-    @handler[symbol].call
   end
 
   def draw_frets
