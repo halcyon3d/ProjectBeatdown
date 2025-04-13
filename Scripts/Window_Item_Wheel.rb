@@ -8,6 +8,10 @@ class Window_Item_Wheel < Window_Selectable_Wheel
     @data = []
   end
   
+  def update_tone
+    self.tone.set(255,255,0,128)
+  end
+
   def get_item_icon(i)
     if @data[i]
       return @data[i].icon_index
@@ -40,16 +44,8 @@ class Window_Item_Wheel < Window_Selectable_Wheel
   end
 
   def make_item_list
-    @data = $game_party.all_items.select {|item| include?(item) }
+    @data = $game_party.all_items#.select {|item| include?(item) }
     @data.push(nil) if include?(nil)
-  end
-
-  def draw_item_number(rect, item)
-    draw_text(rect, sprintf(":%2d", $game_party.item_number(item)), 2)
-  end
-
-  def update_help
-    @help_window.set_item(item)
   end
 
   def refresh

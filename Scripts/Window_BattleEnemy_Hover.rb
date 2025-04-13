@@ -1,15 +1,19 @@
 # encoding: utf-8
 
-class Window_BattleEnemy_Hover < Window_Selectable
+class Window_BattleEnemy_Hover < Window_Base
   def initialize
     super(0, 0, Graphics.width, Graphics.height)
+    self.back_opacity = 40
+    #self.windowskin = Bitmap.new(128, 128)
     @index = 0
-    @active = true
     refresh
     self.visible = false
   end
 
   def update
+    super
+    return unless active
+
     refresh
     handle_input
     if enemy
@@ -17,29 +21,8 @@ class Window_BattleEnemy_Hover < Window_Selectable
     end
   end
 
-  def refresh
-    make_item_list
-    create_contents
-    draw_all_items
-  end
-
-  def item_max
-    $game_troop.alive_members.size
-  end
-
-  def make_item_list
-    @data = $game_troop.alive_members
-    @data.sort! { |a,b| a.screen_x <=> b.screen_x }
-  end
-
-  def enemy; @data[index]; end
-
-  def col_max; return item_max; end
-
   def handle_input
-    if !@active
-      return
-    end
+    return unless active
 
     if Input.trigger?(:LEFT)
       @index -= 1
@@ -48,5 +31,21 @@ class Window_BattleEnemy_Hover < Window_Selectable
       @index += 1
       @index %= item_max
     end
+  end
+
+  def refresh
+    make_item_list
+    create_contents
+  end
+
+  def enemy; @data[@index]; end
+
+  def item_max
+    $game_troop.alive_members.size
+  end
+
+  def make_item_list
+    @data = $game_troop.alive_members
+    @data.sort! { |a,b| a.screen_x <=> b.screen_x }
   end
 end

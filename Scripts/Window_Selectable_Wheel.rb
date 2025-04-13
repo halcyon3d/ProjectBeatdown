@@ -7,8 +7,6 @@ class Window_Selectable_Wheel < Window_Base
   def initialize(key, wheelx, wheely)
     super(edge_padding + wheelx - line_height * 2, wheely - line_height, line_height*4, line_height*4)
 
-    self.back_opacity = 0
-
     @index = 1000000
     @handler = {}
     @cursor_fix = false
@@ -48,6 +46,21 @@ class Window_Selectable_Wheel < Window_Base
       return process_cancel
     end
   end
+  
+  def process_cancel
+    Sound.play_cancel
+    Input.update
+    deactivate
+    call_cancel_handler
+  end
+
+  def call_ok_handler
+    call_handler(:ok)
+  end
+
+  def call_cancel_handler
+    call_handler(:cancel)
+  end
 
   def item_rect(index)
     rect = Rect.new
@@ -69,6 +82,7 @@ class Window_Selectable_Wheel < Window_Base
 
   def draw_all_items
     8.times {|i| draw_item(i, i==Input.dir8input) }
+    cursor_rect.set(item_rect(Input.dir8input))
   end
 
   #--------------------------------------------------------------------------
@@ -213,7 +227,6 @@ class Window_Selectable_Wheel < Window_Base
     self.top_row = row - (page_row_max - 1)
   end
 
-
   #--------------------------------------------------------------------------
   # * Set Help Window
   #--------------------------------------------------------------------------
@@ -264,27 +277,6 @@ class Window_Selectable_Wheel < Window_Base
   # * Processing When OK Button Is Pressed
   #--------------------------------------------------------------------------
 
-  #--------------------------------------------------------------------------
-  # * Call OK Handler
-  #--------------------------------------------------------------------------
-  def call_ok_handler
-    call_handler(:ok)
-  end
-  #--------------------------------------------------------------------------
-  # * Processing When Cancel Button Is Pressed
-  #--------------------------------------------------------------------------
-  def process_cancel
-    Sound.play_cancel
-    Input.update
-    deactivate
-    call_cancel_handler
-  end
-  #--------------------------------------------------------------------------
-  # * Call Cancel Handler
-  #--------------------------------------------------------------------------
-  def call_cancel_handler
-    call_handler(:cancel)
-  end
   #--------------------------------------------------------------------------
   # * Processing When L Button (Page Up) Is Pressed
   #--------------------------------------------------------------------------

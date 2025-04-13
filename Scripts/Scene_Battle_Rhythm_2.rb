@@ -67,8 +67,6 @@ class Scene_Battle < Scene_Base
   end
 
 
-
-
   #--------------------------------------------------------------------------
   # * Wait
   #--------------------------------------------------------------------------
@@ -188,7 +186,6 @@ class Scene_Battle < Scene_Base
     @log_window.method_wait_for_effect = method(:wait_for_effect)
   end
 
-
   def create_info_viewport
     @info_viewport = Viewport.new
     @info_viewport.rect.y = Graphics.height - $STATUSWINDOWHEIGHT
@@ -255,15 +252,17 @@ class Scene_Battle < Scene_Base
   def create_hud_window
     @hud_window = Window_Rhythm_HUD.new(@info_viewport)
   end
-
-
-
-  
   
   def create_status_window
     @status_window = Window_BattleStatus.new
     @status_window.x = Graphics.width
   end
+
+  def select_enemy_selection
+    @enemy_window.refresh
+    @enemy_window.show.activate
+  end
+
 
   #--------------------------------------------------------------------------
   # * Update Status Window Information
@@ -327,13 +326,13 @@ class Scene_Battle < Scene_Base
     @status_window.select(BattleManager.actor.index)
     @party_command_window.close
     @actor_command_window.setup(BattleManager.actor)
+    select_enemy_selection
   end
  
   def command_attack
     BattleManager.actor.input.set_attack
-    if @enemy_window.enemy
-      BattleManager.actor.input.target_index = @enemy_window.enemy.index
-    end
+    BattleManager.actor.input.target_index = @enemy_window.enemy.index
+    @enemy_window.hide.deactivate
     next_command
   end
 
