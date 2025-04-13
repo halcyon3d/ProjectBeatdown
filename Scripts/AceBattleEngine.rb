@@ -2789,9 +2789,7 @@ class Scene_Battle < Scene_Base
     $game_temp.battle_aid = @skill
     BattleManager.actor.input.set_skill(@skill.id)
     BattleManager.actor.last_skill.object = @skill
-    if @skill.for_opponent?
-      select_enemy_selection
-    elsif @skill.for_friend?
+    if @skill.for_friend?
       select_actor_selection
     else
       @skill_window.hide
@@ -2818,9 +2816,7 @@ class Scene_Battle < Scene_Base
     @item = @item_window.item
     $game_temp.battle_aid = @item
     BattleManager.actor.input.set_item(@item.id)
-    if @item.for_opponent?
-      select_enemy_selection
-    elsif @item.for_friend?
+    if @item.for_friend?
       select_actor_selection
     else
       @item_window.hide

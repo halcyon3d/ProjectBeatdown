@@ -231,6 +231,7 @@ class Scene_Battle < Scene_Base
     @skill_window.viewport = @overlay_viewport
     @skill_window.set_handler(:ok,     method(:on_skill_ok))
     @skill_window.set_handler(:cancel, method(:on_skill_cancel))
+    @skill_window.hide
   end
 
   def create_item_window
@@ -238,6 +239,7 @@ class Scene_Battle < Scene_Base
     @item_window.viewport = @overlay_viewport
     @item_window.set_handler(:ok,     method(:on_item_ok))
     @item_window.set_handler(:cancel, method(:on_item_cancel))
+    @item_window.hide
   end
 
   def create_actor_window

@@ -7,32 +7,13 @@ class Window_Item_Wheel < Window_Selectable_Wheel
     @category = :none
     @data = []
   end
-
+  
   def get_item_icon(i)
     if @data[i]
       return @data[i].icon_index
     else
       return 0
     end
-  end
-
-  def category=(category)
-    return if @category == category
-    @category = category
-    refresh
-    self.oy = 0
-  end
-
-  def col_max
-    return 2
-  end
-
-  def item_max
-    @data ? @data.size : 1
-  end
-
-  def item
-    @data && index >= 0 ? @data[index] : nil
   end
 
   def current_item_enabled?
@@ -61,10 +42,6 @@ class Window_Item_Wheel < Window_Selectable_Wheel
   def make_item_list
     @data = $game_party.all_items.select {|item| include?(item) }
     @data.push(nil) if include?(nil)
-  end
-
-  def select_last
-    select(@data.index($game_party.last_item.object) || 0)
   end
 
   def draw_item_number(rect, item)

@@ -5,7 +5,7 @@ class Window_Selectable_Wheel < Window_Base
   attr_accessor :cursor_all               # select all cursors flag
 
   def initialize(key, wheelx, wheely)
-    super(edge_padding + wheelx - line_height * 1.5, wheely - line_height / 2, line_height*3, line_height*3)
+    super(edge_padding + wheelx - line_height * 2, wheely - line_height, line_height*4, line_height*4)
 
     self.back_opacity = 0
 
@@ -28,13 +28,17 @@ class Window_Selectable_Wheel < Window_Base
     refresh
   end
 
+  def item
+    @data && index >= 0 ? @data[index] : nil
+  end
+  
   def process_handling
     return unless open? && active
     @index = Input.dir8input
 
     return if Input.press?(@key)
 
-    if @index < item_max && current_item_enabled?
+    if item
       Sound.play_ok
       Input.update
       deactivate
@@ -49,8 +53,8 @@ class Window_Selectable_Wheel < Window_Base
     rect = Rect.new
     rect.width = line_height
     rect.height = line_height
-    rect.x = line_height + wheel_pos_x(index) * line_height
-    rect.y = line_height + wheel_pos_y(index) * line_height
+    rect.x = line_height * 1.5 + wheel_pos_x(index) * line_height
+    rect.y = line_height * 1.5 + wheel_pos_y(index) * line_height
     rect
   end
 
@@ -236,62 +240,13 @@ class Window_Selectable_Wheel < Window_Base
   def call_handler(symbol)
     @handler[symbol].call if handle?(symbol)
   end
-  #--------------------------------------------------------------------------
-  # * Determine if Cursor is Moveable
-  #--------------------------------------------------------------------------
-  def cursor_movable?
-    active && open? && !@cursor_fix && !@cursor_all && item_max > 0
-  end
-  #--------------------------------------------------------------------------
-  # * Move Cursor Down
-  #--------------------------------------------------------------------------
-  def cursor_down(wrap = false)
-    if index < item_max - col_max || (wrap && col_max == 1)
-      select((index + col_max) % item_max)
-    end
-  end
-  #--------------------------------------------------------------------------
-  # * Move Cursor Up
-  #--------------------------------------------------------------------------
-  def cursor_up(wrap = false)
-    if index >= col_max || (wrap && col_max == 1)
-      select((index - col_max + item_max) % item_max)
-    end
-  end
-  #--------------------------------------------------------------------------
-  # * Move Cursor Right
-  #--------------------------------------------------------------------------
-  def cursor_right(wrap = false)
-    if col_max >= 2 && (index < item_max - 1 || (wrap && horizontal?))
-      select((index + 1) % item_max)
-    end
-  end
-  #--------------------------------------------------------------------------
-  # * Move Cursor Left
-  #--------------------------------------------------------------------------
-  def cursor_left(wrap = false)
-    if col_max >= 2 && (index > 0 || (wrap && horizontal?))
-      select((index - 1 + item_max) % item_max)
-    end
-  end
-  #--------------------------------------------------------------------------
-  # * Move Cursor One Page Down
-  #--------------------------------------------------------------------------
-  def cursor_pagedown
-    if top_row + page_row_max < row_max
-      self.top_row += page_row_max
-      select([@index + page_item_max, item_max - 1].min)
-    end
-  end
-  #--------------------------------------------------------------------------
-  # * Move Cursor One Page Up
-  #--------------------------------------------------------------------------
-  def cursor_pageup
-    if top_row > 0
-      self.top_row -= page_row_max
-      select([@index - page_item_max, 0].max)
-    end
-  end
+ 
+
+
+
+
+
+
 
   #--------------------------------------------------------------------------
   # * Get Activation State of OK Processing
