@@ -9,6 +9,10 @@ class Window_Skill_Wheel < Window_Selectable_Wheel
     @data = []
   end
 
+  def update_tone
+    self.tone.set(255,255,0)
+  end
+
   def get_item_icon(i)
     if @data[i]
       return @data[i].icon_index

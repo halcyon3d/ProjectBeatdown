@@ -20,6 +20,21 @@ class Window_Selectable_Wheel < Window_Base
     deactivate
   end
 
+  def standard_padding
+    return 0
+  end
+
+  def show
+    Audio.se_play("Audio/SE/ui_wheel_open.wav", 40)
+    Audio.se_play("Audio/SE/ui_wheel_hold.wav", 20)
+    return super
+  end
+
+  def hide
+    Audio.se_stop
+    return super
+  end
+
   def update
     super
     process_handling
@@ -39,7 +54,6 @@ class Window_Selectable_Wheel < Window_Base
     Audio.bgs_stop
 
     if item
-      Sound.play_ok
       Input.update
       deactivate
       call_ok_handler

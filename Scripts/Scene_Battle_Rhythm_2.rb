@@ -8,33 +8,24 @@
 class Scene_Battle < Scene_Base
   $STATUSWINDOWHEIGHT = 168
 
-  #--------------------------------------------------------------------------
-  # * Start Processing
-  #--------------------------------------------------------------------------
   def start
     super
     create_spriteset
     create_all_windows
     BattleManager.method_wait_for_message = method(:wait_for_message)
   end
-  #--------------------------------------------------------------------------
-  # * Post-Start Processing
-  #--------------------------------------------------------------------------
+
   def post_start
     super
     battle_start
   end
-  #--------------------------------------------------------------------------
-  # * Pre-Termination Processing
-  #--------------------------------------------------------------------------
+
   def pre_terminate
     super
     Graphics.fadeout(30) if SceneManager.scene_is?(Scene_Map)
     Graphics.fadeout(60) if SceneManager.scene_is?(Scene_Title)
   end
-  #--------------------------------------------------------------------------
-  # * Termination Processing
-  #--------------------------------------------------------------------------
+
   def terminate
     super
     dispose_spriteset
@@ -67,40 +58,28 @@ class Scene_Battle < Scene_Base
   end
 
 
-  #--------------------------------------------------------------------------
-  # * Wait
-  #--------------------------------------------------------------------------
+
   def wait(duration)
     duration.times {|i| update_for_wait if i < duration / 2 || !show_fast? }
   end
-  #--------------------------------------------------------------------------
-  # * Determine if Fast Forward
-  #--------------------------------------------------------------------------
+
   def show_fast?
     Input.press?(:A) || Input.press?(:C)
   end
-  #--------------------------------------------------------------------------
-  # * Wait (No Fast Forward)
-  #--------------------------------------------------------------------------
+
   def abs_wait(duration)
     duration.times {|i| update_for_wait }
   end
-  #--------------------------------------------------------------------------
-  # * Short Wait (No Fast Forward)
-  #--------------------------------------------------------------------------
+
   def abs_wait_short
     abs_wait(15)
   end
-  #--------------------------------------------------------------------------
-  # * Wait Until Message Display has Finished
-  #--------------------------------------------------------------------------
+
   def wait_for_message
     @message_window.update
     update_for_wait while $game_message.visible
   end
-  #--------------------------------------------------------------------------
-  # * Wait Until Animation Display has Finished
-  #--------------------------------------------------------------------------
+
   def wait_for_animation
     update_for_wait
     update_for_wait while @spriteset.animation?
@@ -155,6 +134,30 @@ class Scene_Battle < Scene_Base
   #--------------------------------------------------------------------------
   # * Create All Windows
   #--------------------------------------------------------------------------
+  def command_attack
+    Audio.se_play("Audio/SE/solo_red.wav", 40)
+    BattleManager.actor.input.set_attack
+    next_command
+  end
+
+  def command_skill
+    @skill_window.actor = BattleManager.actor
+    @skill_window.stype_id = @actor_command_window.current_ext
+    @skill_window.refresh
+    @skill_window.show.activate
+  end
+
+  def command_item
+    @item_window.refresh
+    @item_window.show.activate
+  end
+  
+  def command_guard
+    Audio.se_play("Audio/SE/rest.wav", 40)
+    BattleManager.actor.input.set_guard
+    next_command
+  end
+  
   def create_all_windows
     create_info_viewport
     create_overlay_viewport
@@ -274,6 +277,8 @@ class Scene_Battle < Scene_Base
   # * To Next Command Input
   #--------------------------------------------------------------------------
   def next_command
+    BattleManager.actor.input.target_index = @enemy_window.enemy.index
+    @enemy_window.hide.deactivate
     if BattleManager.next_command
       start_actor_command_selection
     else
@@ -328,38 +333,8 @@ class Scene_Battle < Scene_Base
     @actor_command_window.setup(BattleManager.actor)
     select_enemy_selection
   end
- 
-  def command_attack
-    BattleManager.actor.input.set_attack
-    BattleManager.actor.input.target_index = @enemy_window.enemy.index
-    @enemy_window.hide.deactivate
-    next_command
-  end
 
-  #--------------------------------------------------------------------------
-  # * [Skill] Command
-  #--------------------------------------------------------------------------
-  def command_skill
-    @skill_window.actor = BattleManager.actor
-    @skill_window.stype_id = @actor_command_window.current_ext
-    @skill_window.refresh
-    @skill_window.show.activate
-  end
-  #--------------------------------------------------------------------------
-  # * [Guard] Command
-  #--------------------------------------------------------------------------
-  def command_guard
-    BattleManager.actor.input.set_guard
-    next_command
-  end
-  #--------------------------------------------------------------------------
-  # * [Item] Command
-  #--------------------------------------------------------------------------
-  def command_item
-    Audio.me_play("ui_wheel_hold")
-    @item_window.refresh
-    @item_window.show.activate
-  end
+ 
   #--------------------------------------------------------------------------
   # * Start Actor Selection
   #--------------------------------------------------------------------------

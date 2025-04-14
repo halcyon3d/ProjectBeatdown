@@ -43,7 +43,7 @@ class Window_Selectable_QWER < Window_Base
   def chooseindex(index)
     select(index)
     if current_item_enabled?
-      Sound.play_ok
+      play_select_sound(index)
       Input.update
       deactivate
       call_ok_handler
@@ -52,8 +52,9 @@ class Window_Selectable_QWER < Window_Base
     end
   end
 
-
-
+  def play_select_sound(index)
+    #Sound.play_ok
+  end
 
   def item_rect(index)
     rect = Rect.new

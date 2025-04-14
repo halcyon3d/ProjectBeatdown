@@ -401,7 +401,7 @@ class Scene_Battle < Scene_Base
   # * Enemy [OK]
   #--------------------------------------------------------------------------
   def on_enemy_ok
-    BattleManager.actor.input.target_index = @enemy_window.enemy.index
+    BattleManager.actor.input.target_index = e.enemy.index
     @enemy_window.hide
     @skill_window.hide
     @item_window.hide

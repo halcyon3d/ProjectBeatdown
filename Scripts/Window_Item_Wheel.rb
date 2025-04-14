@@ -9,7 +9,7 @@ class Window_Item_Wheel < Window_Selectable_Wheel
   end
   
   def update_tone
-    self.tone.set(255,255,0,128)
+    self.tone.set(0,255,0)
   end
 
   def get_item_icon(i)
