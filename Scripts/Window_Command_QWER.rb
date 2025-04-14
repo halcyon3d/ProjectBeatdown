@@ -18,6 +18,10 @@ class Window_Command_QWER < Window_Selectable_QWER
     activate
   end
 
+  def standard_padding
+    return 0
+  end
+
   def draw_item(index)
     change_color(qwer_color(index), command_enabled?(index))
 

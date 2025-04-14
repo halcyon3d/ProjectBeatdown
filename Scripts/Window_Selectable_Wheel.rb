@@ -36,13 +36,14 @@ class Window_Selectable_Wheel < Window_Base
 
     return if Input.press?(@key)
 
+    Audio.bgs_stop
+
     if item
       Sound.play_ok
       Input.update
       deactivate
       call_ok_handler
     else
-      Sound.play_buzzer
       return process_cancel
     end
   end

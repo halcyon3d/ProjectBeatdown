@@ -135,6 +135,7 @@ Scene_Gameover.rb
 Materials.rb
 FullInput.rb
 AceCoreEngine.rb
+#AceBattle.rb
 AceBattleEngine.rb
 #RTB.rb
 #XFade.rb

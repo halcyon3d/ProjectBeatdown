@@ -30,12 +30,7 @@ class Window_Base < Window
   def line_height
     return 24
   end
-  #--------------------------------------------------------------------------
-  # * Get Standard Padding Size
-  #--------------------------------------------------------------------------
-  def standard_padding
-    return 12
-  end
+
   #--------------------------------------------------------------------------
   # * Update Padding
   #--------------------------------------------------------------------------
@@ -261,7 +256,7 @@ class Window_Base < Window
   end
 
   def standard_padding
-    return 0
+    return 12
   end
 
   def edge_padding

@@ -2251,11 +2251,11 @@ class Window_BattleHelp < Window_Help
   #--------------------------------------------------------------------------
   def update
     super
-    if !self.visible and @text != ""
-      @text = ""
-      return refresh
-    end
-    update_battler_name
+    # if !self.visible and @text != ""
+    #   @text = ""
+    #   return refresh
+    # end
+    # update_battler_name
   end
   
   #--------------------------------------------------------------------------

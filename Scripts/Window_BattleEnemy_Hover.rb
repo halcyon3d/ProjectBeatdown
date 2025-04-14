@@ -3,8 +3,7 @@
 class Window_BattleEnemy_Hover < Window_Base
   def initialize
     super(0, 0, Graphics.width, Graphics.height)
-    self.back_opacity = 40
-    #self.windowskin = Bitmap.new(128, 128)
+    self.windowskin = Bitmap.new(128, 128)
     @index = 0
     refresh
     self.visible = false

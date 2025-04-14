@@ -356,6 +356,7 @@ class Scene_Battle < Scene_Base
   # * [Item] Command
   #--------------------------------------------------------------------------
   def command_item
+    Audio.me_play("ui_wheel_hold")
     @item_window.refresh
     @item_window.show.activate
   end
