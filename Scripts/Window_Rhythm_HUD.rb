@@ -9,8 +9,14 @@ class Window_Rhythm_HUD < Window_Base
     create_rhythm_lines
     set_viewports(viewport)
     @handler = {}
+    @time = -1
+    @callbacktime = -1
 
     refresh
+  end
+
+  def standard_padding
+    return 0
   end
 
   def refresh
@@ -22,6 +28,13 @@ class Window_Rhythm_HUD < Window_Base
 
   def update
     refresh
+    if (@time > 0) && (Timekeeper.get_current_beat > @time)
+      @time = -1
+      Audio.me_play(@queued_sound)
+    end
+    if (@callbacktime > 0) && (Timekeeper.get_current_beat > @callbacktime)
+      handle_success
+    end
   end
 
   def draw_frets
@@ -44,4 +57,28 @@ class Window_Rhythm_HUD < Window_Base
     @line3 = Window_Rhythm_Line.new(1, :EEEE, 5, 6,[])# [3.25])
     @line4 = Window_Rhythm_Line.new(0, :RRRR, 7, 8,[])# [3.5])
   end
+
+  def set_notes(q,w,e,r)
+    @line1.set_notes(q)
+    @line2.set_notes(w)
+    @line3.set_notes(e)
+    @line4.set_notes(r)
+  end
+
+  def queue_sound(file, time)
+    @queued_sound = file
+    @time = time
+  end
+
+  def set_success_callback(callback, callbacktime)
+    @callback = callback
+    @callbacktime = callbacktime
+  end
+
+  def handle_success
+    set_notes([],[],[],[])
+    @callback.call
+    @callbacktime = -1
+  end
+
 end

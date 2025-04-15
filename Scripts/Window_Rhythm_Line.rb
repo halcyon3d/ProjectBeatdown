@@ -79,4 +79,8 @@ class Window_Rhythm_Line < Window_Base
   def draw_note(beat)
     draw_icon(@symbol, fret_width * ((beat - Timekeeper.get_current_beat) % 8), 0)
   end
+
+  def set_notes(buffer)
+    @note_buffer = buffer
+  end
 end

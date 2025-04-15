@@ -26,9 +26,11 @@ class Window_BattleEnemy_Hover < Window_Base
     if Input.trigger?(:LEFT)
       @index -= 1
       @index %= item_max
+      Audio.se_play("Audio/SE/ui_choose.wav", 70)
     elsif Input.trigger?(:RIGHT)
       @index += 1
       @index %= item_max
+      Audio.se_play("Audio/SE/ui_choose.wav", 70)
     end
   end
 

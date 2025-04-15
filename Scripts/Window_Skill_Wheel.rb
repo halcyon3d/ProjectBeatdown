@@ -3,7 +3,7 @@
 class Window_Skill_Wheel < Window_Selectable_Wheel
 
   def initialize
-    super(:KEYW, fret_width * 2, line_height)
+    super(:KEYW, fret_width, line_height * 2)
     @actor = nil
     @stype_id = 0
     @data = []
@@ -18,6 +18,22 @@ class Window_Skill_Wheel < Window_Selectable_Wheel
       return @data[i].icon_index
     else
       return 0
+    end
+  end
+  
+  def current_item_name
+    if item
+      return item.name
+    else
+      return ""
+    end
+  end
+
+  def current_item_desc
+    if item
+      return item.description
+    else
+      return ""
     end
   end
 

@@ -2702,17 +2702,6 @@ class Scene_Battle < Scene_Base
   end
   
   #--------------------------------------------------------------------------
-  # alias method: create_skill_window
-  #--------------------------------------------------------------------------
-  alias scene_battle_create_skill_window_abe create_skill_window
-  def create_skill_window
-    scene_battle_create_skill_window_abe
-    @skill_window.height = @info_viewport.rect.height
-    @skill_window.width = Graphics.width - @actor_command_window.width
-    @skill_window.y = Graphics.height - @skill_window.height
-  end
-  
-  #--------------------------------------------------------------------------
   # alias method: show_fast?
   #--------------------------------------------------------------------------
   alias scene_battle_show_fast_abe show_fast?
@@ -2757,84 +2746,6 @@ class Scene_Battle < Scene_Base
   def command_attack
     $game_temp.battle_aid = $data_skills[BattleManager.actor.attack_skill_id]
     scene_battle_command_attack_abe
-  end
-  
-  #--------------------------------------------------------------------------
-  # alias method: command_skill
-  #--------------------------------------------------------------------------
-  alias scene_battle_command_skill_abe command_skill
-  def command_skill
-    scene_battle_command_skill_abe
-    @status_window.hide
-    @actor_command_window.hide
-    @status_aid_window.show
-  end
-  
-  #--------------------------------------------------------------------------
-  # alias method: command_item
-  #--------------------------------------------------------------------------
-  alias scene_battle_command_item_abe command_item
-  def command_item
-    scene_battle_command_item_abe
-    @status_window.hide
-    @actor_command_window.hide
-    @status_aid_window.show
-  end
-  
-  #--------------------------------------------------------------------------
-  # overwrite method: on_skill_ok
-  #--------------------------------------------------------------------------
-  def on_skill_ok
-    @skill = @skill_window.item
-    $game_temp.battle_aid = @skill
-    BattleManager.actor.input.set_skill(@skill.id)
-    BattleManager.actor.last_skill.object = @skill
-    if @skill.for_friend?
-      select_actor_selection
-    else
-      @skill_window.hide
-      next_command
-      $game_temp.battle_aid = nil
-    end
-  end
-  
-  #--------------------------------------------------------------------------
-  # alias method: on_skill_cancel
-  #--------------------------------------------------------------------------
-  alias scene_battle_on_skill_cancel_abe on_skill_cancel
-  def on_skill_cancel
-    scene_battle_on_skill_cancel_abe
-    @status_window.show
-    @actor_command_window.show
-    @status_aid_window.hide
-  end
-  
-  #--------------------------------------------------------------------------
-  # overwrite method: on_item_ok
-  #--------------------------------------------------------------------------
-  def on_item_ok
-    @item = @item_window.item
-    $game_temp.battle_aid = @item
-    BattleManager.actor.input.set_item(@item.id)
-    if @item.for_friend?
-      select_actor_selection
-    else
-      @item_window.hide
-      next_command
-      $game_temp.battle_aid = nil
-    end
-    $game_party.last_item.object = @item
-  end
-  
-  #--------------------------------------------------------------------------
-  # alias method: on_item_cancel
-  #--------------------------------------------------------------------------
-  alias scene_battle_on_item_cancel_abe on_item_cancel
-  def on_item_cancel
-    scene_battle_on_item_cancel_abe
-    @status_window.show
-    @actor_command_window.show
-    @status_aid_window.hide
   end
   
   #--------------------------------------------------------------------------

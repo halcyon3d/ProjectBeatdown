@@ -16,8 +16,20 @@ class Window_Selectable_Wheel < Window_Base
     @wheelx = wheelx
     @wheely = wheely
 
+    @info_window = Window_Base.new(edge_padding + fret_width * 3, line_height, fret_width*1.5, line_height*5)
+    @info_window.deactivate.hide
+
+    self.index = -1
+    self.back_opacity = 255
+    
+    @info_window.back_opacity = 255
+
     update_padding
     deactivate
+  end
+
+  def info_window
+    return @info_window
   end
 
   def standard_padding
@@ -27,11 +39,14 @@ class Window_Selectable_Wheel < Window_Base
   def show
     Audio.se_play("Audio/SE/ui_wheel_open.wav", 40)
     Audio.se_play("Audio/SE/ui_wheel_hold.wav", 20)
+    @info_window.show
     return super
   end
 
   def hide
     Audio.se_stop
+    @info_window.hide
+    self.index = -1
     return super
   end
 
@@ -47,6 +62,10 @@ class Window_Selectable_Wheel < Window_Base
   
   def process_handling
     return unless open? && active
+    if @index != Input.dir8input
+      Audio.se_play("Audio/SE/ui_cursor3.wav")
+    end
+
     @index = Input.dir8input
 
     return if Input.press?(@key)
@@ -98,6 +117,21 @@ class Window_Selectable_Wheel < Window_Base
   def draw_all_items
     8.times {|i| draw_item(i, i==Input.dir8input) }
     cursor_rect.set(item_rect(Input.dir8input))
+    draw_item_info
+  end
+
+  def draw_item_info
+    @info_window.contents.clear
+    @info_window.contents.draw_text(0,0,fret_width*1.5,line_height,current_item_name)
+    @info_window.contents.draw_text(0,line_height,fret_width*1.5,line_height*4,current_item_desc)
+  end
+
+  def current_item_name
+    return index
+  end
+
+  def current_item_desc
+    return "Eight."
   end
 
   #--------------------------------------------------------------------------

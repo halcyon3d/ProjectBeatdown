@@ -8,7 +8,7 @@ module Timekeeper
   end
 
   def self.bpm
-    return 120
+    return 138
   end
 
   def self.bps
@@ -22,6 +22,7 @@ module Timekeeper
   def self.get_current_beat
     return get_current_time * bps + 1
   end
+
   # def self.get_current_beat_synced
   #   return get_audio_pos_in_seconds * bps
   # end

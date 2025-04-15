@@ -20,6 +20,22 @@ class Window_Item_Wheel < Window_Selectable_Wheel
     end
   end
 
+  def current_item_name
+    if item
+      return item.name
+    else
+      return ""
+    end
+  end
+
+  def current_item_desc
+    if item
+      return item.description
+    else
+      return ""
+    end
+  end
+
   def current_item_enabled?
     enable?(@data[index])
   end

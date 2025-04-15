@@ -21,6 +21,10 @@ class Window_Selectable_QWER < Window_Base
     deactivate
   end
 
+  def standard_padding
+    return 0
+  end
+
   def update
     super
     process_handling

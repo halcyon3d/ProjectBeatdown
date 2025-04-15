@@ -1,13 +1,9 @@
 # encoding: utf-8
-#==============================================================================
-# ** Scene_Battle
-#------------------------------------------------------------------------------
-#  This class performs battle screen processing.
-#==============================================================================
 
 class Scene_Battle < Scene_Base
   $STATUSWINDOWHEIGHT = 168
 
+  # setup
   def start
     super
     create_spriteset
@@ -57,8 +53,6 @@ class Scene_Battle < Scene_Base
     update_basic
   end
 
-
-
   def wait(duration)
     duration.times {|i| update_for_wait if i < duration / 2 || !show_fast? }
   end
@@ -84,33 +78,24 @@ class Scene_Battle < Scene_Base
     update_for_wait
     update_for_wait while @spriteset.animation?
   end
-  #--------------------------------------------------------------------------
-  # * Wait Until Effect Execution Ends
-  #--------------------------------------------------------------------------
+
   def wait_for_effect
     update_for_wait
     update_for_wait while @spriteset.effect?
   end
-  #--------------------------------------------------------------------------
-  # * Update Information Display Viewport
-  #--------------------------------------------------------------------------
+
   def update_info_viewport
     move_info_viewport(0)   if @party_command_window.active
     move_info_viewport(0) if @actor_command_window.active
     move_info_viewport(0)  if BattleManager.in_turn?
   end
-  #--------------------------------------------------------------------------
-  # * Move Information Display Viewport
-  #--------------------------------------------------------------------------
+
   def move_info_viewport(ox)
     current_ox = @info_viewport.ox
     @info_viewport.ox = [ox, current_ox + 16].min if current_ox < ox
     @info_viewport.ox = [ox, current_ox - 16].max if current_ox > ox
   end
-  #--------------------------------------------------------------------------
-  # * Update Processing for Opening Message Window
-  #    Set openness to 0 until the status window and so on are finished closing.
-  #--------------------------------------------------------------------------
+
   def update_message_open
     if $game_message.busy? && !@status_window.close?
       @message_window.openness = 0
@@ -119,44 +104,19 @@ class Scene_Battle < Scene_Base
       @actor_command_window.close
     end
   end
-  #--------------------------------------------------------------------------
-  # * Create Sprite Set
-  #--------------------------------------------------------------------------
+
   def create_spriteset
     @spriteset = Spriteset_Battle.new
   end
-  #--------------------------------------------------------------------------
-  # * Free Sprite Set
-  #--------------------------------------------------------------------------
+
   def dispose_spriteset
     @spriteset.dispose
   end
-  #--------------------------------------------------------------------------
-  # * Create All Windows
-  #--------------------------------------------------------------------------
-  def command_attack
-    Audio.se_play("Audio/SE/solo_red.wav", 40)
-    BattleManager.actor.input.set_attack
-    next_command
-  end
 
-  def command_skill
-    @skill_window.actor = BattleManager.actor
-    @skill_window.stype_id = @actor_command_window.current_ext
-    @skill_window.refresh
-    @skill_window.show.activate
-  end
 
-  def command_item
-    @item_window.refresh
-    @item_window.show.activate
-  end
-  
-  def command_guard
-    Audio.se_play("Audio/SE/rest.wav", 40)
-    BattleManager.actor.input.set_guard
-    next_command
-  end
+  ####################
+  # COMMANDS
+  ####################
   
   def create_all_windows
     create_info_viewport
@@ -229,6 +189,7 @@ class Scene_Battle < Scene_Base
   def create_skill_window
     @skill_window = Window_Skill_Wheel.new
     @skill_window.viewport = @overlay_viewport
+    @skill_window.info_window.viewport = @overlay_viewport
     @skill_window.set_handler(:ok,     method(:on_skill_ok))
     @skill_window.set_handler(:cancel, method(:on_skill_cancel))
     @skill_window.hide
@@ -237,9 +198,11 @@ class Scene_Battle < Scene_Base
   def create_item_window
     @item_window = Window_Item_Wheel.new
     @item_window.viewport = @overlay_viewport
+    @item_window.info_window.viewport = @overlay_viewport
     @item_window.set_handler(:ok,     method(:on_item_ok))
     @item_window.set_handler(:cancel, method(:on_item_cancel))
     @item_window.hide
+
   end
 
   def create_actor_window
@@ -261,11 +224,39 @@ class Scene_Battle < Scene_Base
     @status_window.x = Graphics.width
   end
 
-  def select_enemy_selection
+  def show_enemy_selection
     @enemy_window.refresh
     @enemy_window.show.activate
   end
 
+  def command_attack
+    Audio.se_play("Audio/SE/solo_red.wav")
+    BattleManager.actor.input.target_index = @enemy_window.enemy.index
+    BattleManager.actor.input.set_attack
+    next_command
+  end
+
+  def command_skill
+    @enemy_window.hide.deactivate
+    @actor_command_window.hide.deactivate
+    @skill_window.actor = BattleManager.actor
+    @skill_window.stype_id = @actor_command_window.current_ext
+    @skill_window.refresh
+    @skill_window.show.activate
+  end
+
+  def command_item
+    @enemy_window.hide.deactivate
+    @actor_command_window.hide.deactivate
+    @item_window.refresh
+    @item_window.show.activate
+  end
+  
+  def command_guard
+    Audio.se_play("Audio/SE/mc_rest.wav")
+    BattleManager.actor.input.set_guard
+    next_command
+  end
 
   #--------------------------------------------------------------------------
   # * Update Status Window Information
@@ -277,7 +268,6 @@ class Scene_Battle < Scene_Base
   # * To Next Command Input
   #--------------------------------------------------------------------------
   def next_command
-    BattleManager.actor.input.target_index = @enemy_window.enemy.index
     @enemy_window.hide.deactivate
     if BattleManager.next_command
       start_actor_command_selection
@@ -331,7 +321,7 @@ class Scene_Battle < Scene_Base
     @status_window.select(BattleManager.actor.index)
     @party_command_window.close
     @actor_command_window.setup(BattleManager.actor)
-    select_enemy_selection
+    show_enemy_selection
   end
 
  
@@ -342,9 +332,7 @@ class Scene_Battle < Scene_Base
     @actor_window.refresh
     @actor_window.show.activate
   end
-  #--------------------------------------------------------------------------
-  # * Actor [OK]
-  #--------------------------------------------------------------------------
+
   def on_actor_ok
     BattleManager.actor.input.target_index = @actor_window.index
     @actor_window.hide
@@ -352,9 +340,7 @@ class Scene_Battle < Scene_Base
     @item_window.hide
     next_command
   end
-  #--------------------------------------------------------------------------
-  # * Actor [Cancel]
-  #--------------------------------------------------------------------------
+
   def on_actor_cancel
     @actor_window.hide
     case @actor_command_window.current_symbol
@@ -365,51 +351,67 @@ class Scene_Battle < Scene_Base
     end
   end
 
-  #--------------------------------------------------------------------------
-  # * Skill [OK]
-  #--------------------------------------------------------------------------
   def on_skill_ok
     @skill = @skill_window.item
     BattleManager.actor.input.set_skill(@skill.id)
     BattleManager.actor.last_skill.object = @skill
-    if !@skill.need_selection?
-      @skill_window.hide
-      next_command
-    elsif @skill.for_opponent?
-      select_enemy_selection
-    else
-      select_actor_selection
-    end
+    @skill_window.hide
+
+
+    BattleManager.actor.input.target_index = @enemy_window.enemy.index
+
+    Timekeeper.update_offset
+    @hud_window.queue_sound("Audio/ME/tech_riff04", 4)
+    @hud_window.set_notes(
+      [4,6],
+      [4.75],
+      [5.5,6.75,8],
+      [7.5,8])
+    @hud_window.set_success_callback(method(:on_skill_success), 8)
+
+    # if !@skill.need_selection?
+    #   next_command
+    # elsif @skill.for_opponent?
+    #   BattleManager.actor.input.target_index = @enemy_window.enemy.index
+    #   next_command
+    # else
+    #   select_actor_selection
+    # end
   end
-  #--------------------------------------------------------------------------
-  # * Skill [Cancel]
-  #--------------------------------------------------------------------------
+
   def on_skill_cancel
     @skill_window.hide
-    @actor_command_window.activate
+    @actor_command_window.show.activate
+    @enemy_window.show.activate
   end
-  #--------------------------------------------------------------------------
-  # * Item [OK]
-  #--------------------------------------------------------------------------
+
+  def on_skill_success
+    next_command
+  end
+
   def on_item_ok
+    Audio.se_play("Audio/SE/mc_vox_bbox.wav", 40)
     @item = @item_window.item
+    @item_window.hide
+
     BattleManager.actor.input.set_item(@item.id)
-    if !@item.need_selection?
-      @item_window.hide
-      next_command
-    elsif @item.for_opponent?
-      select_enemy_selection
-    else
-      select_actor_selection
-    end
+    next_command
     $game_party.last_item.object = @item
+
+        # if !@item.need_selection?
+    #   next_command
+    # elsif @item.for_opponent?
+    #   BattleManager.actor.input.target_index = @enemy_window.enemy.index
+    #   next_command
+    # else
+    #   select_actor_selection
+    # end
   end
-  #--------------------------------------------------------------------------
-  # * Item [Cancel]
-  #--------------------------------------------------------------------------
+
   def on_item_cancel
     @item_window.hide
-    @actor_command_window.activate
+    @actor_command_window.show.activate
+    @enemy_window.show.activate
   end
   #--------------------------------------------------------------------------
   # * Battle Start
@@ -417,7 +419,7 @@ class Scene_Battle < Scene_Base
   def battle_start
     BattleManager.battle_start
     process_event
-    start_party_command_selection
+    start_actor_command_selection
   end
   #--------------------------------------------------------------------------
   # * Start Turn

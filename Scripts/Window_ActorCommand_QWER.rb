@@ -20,12 +20,6 @@ class Window_ActorCommand_QWER < Window_Command_QWER
     open
   end
 
-  def play_select_sound(index)
-    switch index
-    case 1,2
-      return Sound.pla
-  # create command list
-
   def make_command_list
     return unless @actor
     add_attack_command
